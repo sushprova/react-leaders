@@ -1,27 +1,34 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect, useRef } from "react";
 import { Leader } from "./types/leader";
-import { LEADERS } from "./data/mock-leaders";
 import LeaderDetail from "./components/LeaderDetail";
 
 export default function App() {
-  const [leaders, setLeaders] = useState<Leader[]>(LEADERS);
+  const [leaders, setLeaders] = useState<Leader[]>([]);
   const [selectedLeaderId, setSelectedLeaderId] = useState<number | null>(null);
+  const fetched = useRef(false) ;
 
   const selectedLeader = leaders.find(
-// callback function returns true when it matches and leader gets the associated value of array
+    // callback function returns true when it matches and leader gets the associated value of array
     (leader) => leader.id === selectedLeaderId
   );
 
+  useEffect(() => {
+    if (!fetched.current){
+    fetch('http://localhost:3000/leaders')
+    .then((res: Response) => res.json())
+    .then(data => {setLeaders(data)});
+    fetched.current = true;
+    }
+  }, [])
 
-//an arrow function that takes id which is a number and updates the
-//state variable, this whole thing is a const variable named handleSelectedLeader
+  //an arrow function that takes id which is a number and updates the
+  //state variable, this whole thing is a const variable named handleSelectedLeader
   const handleSelectedLeader = (id: number) => {
     setSelectedLeaderId(id);
   };
 
-
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-  // setLeader({...leader, name: event.target.value})
+    // setLeader({...leader, name: event.target.value})
     const updatedName = event.target.value;
 
     setLeaders((prevLeaders) =>
@@ -33,7 +40,6 @@ export default function App() {
       })
     );
   };
-  
 
   return (
     <div className="container  mt-5 mx-auto">
@@ -57,9 +63,7 @@ export default function App() {
         ))}
       </ul>
 
-      <LeaderDetail leader= {selectedLeader} onChangeName={handleNameChange} />
-
+      <LeaderDetail leader={selectedLeader} onChangeName={handleNameChange} />
     </div>
   );
 }
-  
