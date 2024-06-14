@@ -18,6 +18,7 @@ export default function Dashboard() {
   }, [])
   
   return (
+    
     <div className='flex flex-col gap-3'>
       <h2 className='text-2xl'>Top Leaders</h2>
       <div className='flex gap-3'>

@@ -42,7 +42,7 @@ export default function LeadersList() {
   };
 
   return (
-    <div className="container  mt-5 mx-auto">
+    <div >
       <h2 className="text-2xl">My Leaders</h2>
       <ul className="flex flex-col gap-2 my-2">
         {leaders.map((leader) => (
