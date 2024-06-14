@@ -1,69 +1,14 @@
-import { useState, ChangeEvent, useEffect, useRef } from "react";
-import { Leader } from "./types/leader";
-import LeaderDetail from "./components/LeaderDetail";
+import { Outlet } from "react-router-dom";
 
 export default function App() {
-  const [leaders, setLeaders] = useState<Leader[]>([]);
-  const [selectedLeaderId, setSelectedLeaderId] = useState<number | null>(null);
-  const fetched = useRef(false) ;
-
-  const selectedLeader = leaders.find(
-    // callback function returns true when it matches and leader gets the associated value of array
-    (leader) => leader.id === selectedLeaderId
-  );
-
-  useEffect(() => {
-    if (!fetched.current){
-    fetch('http://localhost:3000/leaders')
-    .then((res: Response) => res.json())
-    .then(data => {setLeaders(data)});
-    fetched.current = true;
-    }
-  }, [])
-
-  //an arrow function that takes id which is a number and updates the
-  //state variable, this whole thing is a const variable named handleSelectedLeader
-  const handleSelectedLeader = (id: number) => {
-    setSelectedLeaderId(id);
-  };
-
-  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    // setLeader({...leader, name: event.target.value})
-    const updatedName = event.target.value;
-
-    setLeaders((prevLeaders) =>
-      prevLeaders.map((leader) => {
-        if (leader.id === selectedLeaderId) {
-          return { ...leader, name: updatedName };
-        }
-        return leader;
-      })
-    );
-  };
-
   return (
-    <div className="container  mt-5 mx-auto">
-      <h2 className="text-2xl">My Leaders</h2>
-      <ul className="flex flex-col gap-2 my-2">
-        {leaders.map((leader) => (
-          // keys are necessary to identify each element otherwise it will have to
-          // re render the whole list everytime there is a change
-          <li
-            key={leader.id}
-            className="flex cursor-pointer"
-            onClick={() => handleSelectedLeader(leader.id)}
-          >
-            <span className="bg-slate-500 text-white rounded-md p-1.5 m-1">
-              {leader.id}
-            </span>
-            <span className="bg-slate-200 rounded-md p-1.5 w-1/4 m-1">
-              {leader.name}
-            </span>
-          </li>
-        ))}
-      </ul>
-
-      <LeaderDetail leader={selectedLeader} onChangeName={handleNameChange} />
-    </div>
+    <>
+      <div className="mt-5 container mx-auto flex justify-between gap-6">
+        <div className="flex-1">
+          <Outlet />
+        </div>
+        <div className="flex-1">Messages go here:</div>
+      </div>
+    </>
   );
 }
