@@ -5,6 +5,7 @@ import './index.css'
 import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom'
 import Dashboard from './components/Dashboard.tsx'
 import LeadersList from './components/LeadersList.tsx'
+import LeaderDetail from './components/LeaderDetail.tsx'
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,7 @@ const router = createBrowserRouter([
       {index: true, element: <Navigate replace to= '/dashboard' />},
       {path: '/dashboard', element: <Dashboard/>},
       {path: '/leaders', element: <LeadersList/>},
+      {path: '/leaders/:id', element: <LeaderDetail/>},
     ]
   }
 ])

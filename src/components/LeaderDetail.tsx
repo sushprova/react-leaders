@@ -1,15 +1,36 @@
-import React, { ChangeEvent } from 'react'
+import React, {  ChangeEvent, useEffect, useRef, useState } from 'react'
 import { Leader } from '../types/leader'
+import { useParams } from 'react-router-dom';
 
-type Props ={
-  // ? means optional
-    leader?:Leader;
-    onChangeName: (event: ChangeEvent<HTMLInputElement>) => void;
-}
+const apiUrl = import.meta.env.VITE_API_URL
+
+// type Props ={
+//   // ? means optional
+//     leader?:Leader;
+//     onChangeName?: (event: ChangeEvent<HTMLInputElement>) => void;
+// }
 // export default function LeaderDetail(props:Props) { korle props.leader.id 
-export default function LeaderDetail({leader, onChangeName}:Props) {
+export default function LeaderDetail() {
+
+const[leader, setLeader] =useState<Leader | null>(null);
+const params = useParams();
+const fetched = useRef(false) ;
+
+useEffect(() => {
+  if (!fetched.current){
+  fetch(`${apiUrl}/leaders/${params.id}`)
+  .then((res: Response) => res.json())
+  .then(data => {setLeader(data)});
+  fetched.current = true;
+  }
+}, [params.id])
+
 
 if (!leader) return null;  
+
+const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+  setLeader({...leader, name: event.target.value})
+}
   return (
 <>
           <h2 className="text-2xl">Details</h2>
@@ -30,7 +51,7 @@ if (!leader) return null;
               className="border border-gray-300 rounded-xl p-2 w-1/4"
               // iniatial state e je naam ta ase Zego, sheita show korbe. Initially empty hoile empty show korbe.
               value={leader.name}
-              onChange={onChangeName}
+              onChange={handleNameChange}
             />
           </div>
         </>  )

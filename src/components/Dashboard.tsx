@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Leader } from '../types/leader';
 import { Link } from 'react-router-dom';
 
+
+const apiUrl = import.meta.env.VITE_API_URL
+
 export default function Dashboard() {
 
   const [leaders, setLeaders] = useState<Leader[]>([]);
@@ -10,7 +13,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!fetched.current){
-    fetch('http://localhost:3000/leaders?_limit=4')
+    fetch(`${apiUrl}/leaders?_limit=4`)
     .then((res: Response) => res.json())
     .then(data => {setLeaders(data)});
     fetched.current = true;
@@ -18,7 +21,7 @@ export default function Dashboard() {
   }, [])
   
   return (
-    
+
     <div className='flex flex-col gap-3'>
       <h2 className='text-2xl'>Top Leaders</h2>
       <div className='flex gap-3'>
