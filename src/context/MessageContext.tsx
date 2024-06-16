@@ -6,7 +6,11 @@ type MessageContextType ={
     clearMessages:() => void;
 }
 
+// The default value is set to undefined, which means if a component tries to 
+// consume this context without a provider, it will get undefined.
 const MessageContext = createContext<MessageContextType | undefined>(undefined);
+
+
 
 const MessageProvider = ({children}: {children: ReactNode}) => {
     const[messages, setMessages] = useState<string[]>([]);
@@ -25,6 +29,7 @@ const MessageProvider = ({children}: {children: ReactNode}) => {
         </MessageContext.Provider>
     )
 }
+
 
 const useMessages = () => {
     const context = useContext(MessageContext);
