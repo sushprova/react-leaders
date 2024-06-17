@@ -1,15 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Leader } from '../types/leader';
+import React, { useEffect, useRef, useState } from "react";
+import { Leader } from "../types/leader";
 // import LeaderDetail from './LeaderDetail';
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { useMessages } from "../context/MessageContext";
 
-
-const apiUrl = import.meta.env.VITE_API_URL
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function LeadersList() {
   const [leaders, setLeaders] = useState<Leader[]>([]);
   // const [selectedLeaderId, setSelectedLeaderId] = useState<number | null>(null);
-  const fetched = useRef(false) ;
+  const fetched = useRef(false);
+  const { addMessage } = useMessages();
 
   // const selectedLeader = leaders.find(
   //   // callback function returns true when it matches and leader gets the associated value of array
@@ -17,13 +18,16 @@ export default function LeadersList() {
   // );
 
   useEffect(() => {
-    if (!fetched.current){
-    fetch(`${apiUrl}/leaders`)
-    .then((res: Response) => res.json())
-    .then(data => {setLeaders(data)});
-    fetched.current = true;
+    if (!fetched.current) {
+      fetch(`${apiUrl}/leaders`)
+        .then((res: Response) => res.json())
+        .then((data) => {
+          setLeaders(data);
+          addMessage("All leaders loaded");
+        });
+      fetched.current = true;
     }
-  }, [])
+  }, [addMessage]);
 
   //an arrow function that takes id which is a number and updates the
   //state variable, this whole thing is a const variable named handleSelectedLeader
@@ -46,16 +50,17 @@ export default function LeadersList() {
   // };
 
   return (
-    <div >
+    <div className="ml-4">
       <h2 className="text-2xl">My Leaders</h2>
       <ul className="flex flex-col gap-2 my-2">
         {leaders.map((leader) => (
           // keys are necessary to identify each element otherwise it will have to
           // re render the whole list everytime there is a change
-          <Link to={`/leaders/${leader.id}`} 
+          <Link
+            to={`/leaders/${leader.id}`}
             key={leader.id}
             className="flex cursor-pointer"
-            // onClick={() => handleSelectedLeader(leader.id)} 
+            // onClick={() => handleSelectedLeader(leader.id)}
           >
             <span className="bg-slate-500 text-white rounded-md p-1.5 m-1">
               {leader.id}
@@ -66,7 +71,6 @@ export default function LeadersList() {
           </Link>
         ))}
       </ul>
-
     </div>
   );
 }
