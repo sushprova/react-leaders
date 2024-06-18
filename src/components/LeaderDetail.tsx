@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { Leader } from "../types/leader";
 import { useParams } from "react-router-dom";
 import { useMessages } from "../context/MessageContext";
@@ -30,9 +30,35 @@ export default function LeaderDetail() {
 
   if (!leader) return null;
 
-  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setLeader({ ...leader, name: event.target.value });
+  // controlled input cause tracks the change
+  // const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+  //   setLeader({ ...leader, name: event.target.value });
+  // };
+
+  // uncontrolled input
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const url = `${apiUrl}/leaders/${leader.id}`;
+    // console.log(formData.get("name"));
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        body: JSON.stringify({ name: formData.get("name") }),
+      });
+
+      if (!response.ok)
+        throw new Error("Request failed:" + response.statusText);
+
+      const data = await response.json();
+      addMessage(`Leader ${leader.name} updated to ${data.name}`);
+      setLeader(data);
+    } catch (error) {
+      console.log(error);
+      addMessage("Failed to update leader");
+    }
   };
+
   return (
     <>
       <h2 className="text-2xl">Details</h2>
@@ -46,15 +72,23 @@ export default function LeaderDetail() {
       </div>
 
       <div className="flex flex-col gap-2 mt-3 border-t">
-        <label>Leader Name</label>
-        <input
-          type="text"
-          placeholder="name"
-          className="border border-gray-300 rounded-xl p-2 w-1/4"
-          // iniatial state e je naam ta ase Zego, sheita show korbe. Initially empty hoile empty show korbe.
-          value={leader.name}
-          onChange={handleNameChange}
-        />
+        <form onSubmit={onSubmit}>
+          <label>Leader Name</label>
+          <div className="flex gap-3">
+            <input
+              type="text"
+              name="name"
+              placeholder="name"
+              className="border border-gray-300 rounded-xl p-2 w-1/4"
+              // iniatial state e je naam ta ase Zego, sheita show korbe. Initially empty hoile empty show korbe.
+              defaultValue={leader.name}
+              // onChange={handleNameChange}
+            />
+            <button type="submit" className="btn">
+              Submit
+            </button>
+          </div>
+        </form>
       </div>
     </>
   );
