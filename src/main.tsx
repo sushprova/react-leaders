@@ -11,6 +11,7 @@ import Dashboard from "./components/Dashboard.tsx";
 import LeadersList from "./components/LeadersList.tsx";
 import LeaderDetail from "./components/LeaderDetail.tsx";
 import { MessageProvider } from "./context/MessageContext.tsx";
+import LeaderForm from "./components/LeaderForm.tsx";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/leaders", element: <LeadersList /> },
       { path: "/leaders/:id", element: <LeaderDetail /> },
+      { path: "leaders/create", element: <LeaderForm /> },
     ],
   },
 ]);

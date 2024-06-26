@@ -13,7 +13,9 @@ export default function App() {
             <NavLink to="/dashboard">Dashboard</NavLink>
           </li>
           <li>
-            <NavLink to="/leaders">Leaders</NavLink>
+            <NavLink to="/leaders" end>
+              Leaders
+            </NavLink>
           </li>
         </ul>
       </nav>

@@ -48,10 +48,31 @@ export default function LeadersList() {
   //     })
   //   );
   // };
+  async function deleteLeader(leader: Leader) {
+    try {
+      const response = await fetch(`${apiUrl}/leaders/${leader.id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Request failed" + response.statusText);
 
+      setLeaders((prevLeaders) =>
+        prevLeaders.filter((l) => l.id !== leader.id)
+      );
+      addMessage(`Leader ${leader.name} deleted.`);
+    } catch (error) {
+      console.log(error);
+      addMessage("Failed to delete leader.");
+    }
+  }
   return (
     <div className="ml-4">
-      <h2 className="text-2xl">My Leaders</h2>
+      <div className="flex gap-3">
+        <h2 className="text-2xl">My Leaders</h2>
+        <Link to="/leaders/create" className="btn">
+          {" "}
+          Create new
+        </Link>
+      </div>
       <ul className="flex flex-col gap-2 my-2">
         {leaders.map((leader) => (
           // keys are necessary to identify each element otherwise it will have to
@@ -65,9 +86,18 @@ export default function LeadersList() {
             <span className="bg-slate-500 text-white rounded-md p-1.5 m-1">
               {leader.id}
             </span>
-            <span className="bg-slate-200 rounded-md p-1.5 w-full m-1">
-              {leader.name}
-            </span>
+            <div className="bg-slate-200 rounded-md p-1.5 w-full flex justify-between">
+              <span>{leader.name}</span>
+              <span
+                onClick={(e) => {
+                  e.preventDefault();
+                  deleteLeader(leader);
+                }}
+                className="bg-white px-1 cursor-pointer"
+              >
+                X
+              </span>
+            </div>
           </Link>
         ))}
       </ul>
